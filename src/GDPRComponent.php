@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View as FacadesView;
 use Illuminate\View\View;
 use Livewire\Component;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 use Milenmk\LaravelGdprExporter\Services\UserDataExporterService;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class GDPRComponent extends Component
 {
@@ -17,9 +17,9 @@ class GDPRComponent extends Component
 
     protected UserDataExporterService $exporter;
 
-    public function mount(): void
+    public function __construct()
     {
-        $this->exporter = new UserDataExporterService();
+        $this->exporter = new UserDataExporterService;
     }
 
     public function render(): View
