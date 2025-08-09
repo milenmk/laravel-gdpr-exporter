@@ -19,6 +19,8 @@ A lightweight Livewire component for exporting user data in multiple GDPR-compli
 - Streamed downloads
 - Beautifully formatted output
 - Built with Livewire 3
+- Configurable relation detection (reflection or whitelist)
+- Customizable export settings
 
 ---
 
@@ -44,7 +46,13 @@ composer require milenmk/laravel-gdpr-exporter
    <livewire:gdpr-exporter />
    ```
 
-2. Optional: Publish the Blade view if you want to customize the UI:
+2. Optional: Publish the configuration file:
+
+   ```copy
+   php artisan vendor:publish --tag=laravel-gdpr-exporter-config
+   ```
+
+3. Optional: Publish the Blade view if you want to customize the UI:
 
    ```copy
    php artisan vendor:publish --tag=laravel-gdpr-exporter-views
@@ -52,7 +60,7 @@ composer require milenmk/laravel-gdpr-exporter
 
    This will publish the file in `resources/views/vendor/laravel-gdpr-exporter/livewire/gdpr.blade.php`
 
-📁 Export Formats
+## 📁 Export Formats
 
 | Format | Output                   | Content-Type     |
 | ------ | ------------------------ | ---------------- |
@@ -60,6 +68,50 @@ composer require milenmk/laravel-gdpr-exporter
 | CSV    | Key-value flat list      | text/csv         |
 | XML    | Nested XML document      | application/xml  |
 | HTML   | Styled HTML table        | text/html        |
+
+## ⚙️ Configuration
+
+The package provides several configuration options in config/gdpr-exporter.php:
+
+### User Model
+
+Specify the user model class to use for GDPR exports:
+
+<pre><code>'user_model' => env('GDPR_USER_MODEL', 'App\Models\User'),
+</code></pre>
+
+### Relations Detection
+
+Choose between automatic reflection-based detection or explicit whitelist:
+
+<pre><code>'relations_detection' => [
+    'method' => env('GDPR_RELATIONS_METHOD', 'whitelist'), // 'reflection' or 'whitelist'
+    
+    // When using 'whitelist' method, only these relations will be loaded
+    'whitelist' => [
+        // Example: 'posts', 'profile', 'roles', 'permissions'
+    ],
+    
+    // When using 'reflection' method, these methods will be excluded
+    'excluded_methods' => [
+        'delete', 'destroy', 'forceDelete', 'restore', 'save',
+        // ... more methods listed in the config file
+    ],
+],
+</code></pre>
+
+### Export Settings
+
+Configure how data is processed during export:
+
+<pre><code>'export' => [
+    // Whether to remove ID fields from the exported data
+    'remove_ids' => env('GDPR_REMOVE_IDS', true),
+    
+    // Whether to flatten pivot table data in the export
+    'flatten_pivot' => env('GDPR_FLATTEN_PIVOT', true),
+],
+</code></pre>
 
 ## 🧠 How It Works
 

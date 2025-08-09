@@ -14,6 +14,14 @@ class GDPRExporterServiceProvider extends ServiceProvider
         // Load views
         $this->loadViewsFrom(__DIR__ . '/../resources/views', 'laravel-gdpr-exporter');
 
+        // Publish config
+        $this->publishes(
+            [
+                __DIR__ . '/../config/gdpr-exporter.php' => config_path('gdpr-exporter.php'),
+            ],
+            'laravel-gdpr-exporter-config',
+        );
+
         // Publish views
         $this->publishes(
             [
@@ -29,6 +37,7 @@ class GDPRExporterServiceProvider extends ServiceProvider
 
     public function register(): void
     {
-        //
+        // Merge config
+        $this->mergeConfigFrom(__DIR__ . '/../config/gdpr-exporter.php', 'gdpr-exporter');
     }
 }
