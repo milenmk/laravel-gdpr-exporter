@@ -29,7 +29,7 @@ class UserDataExporterService
     public function prepareUserData(Model $user): array
     {
         $relations = $this->getLoadableRelations($user);
-        $user->load($relations);
+        $this->safeLoadRelations($user, $relations);
 
         $array = $user->toArray();
 
@@ -135,6 +135,22 @@ class UserDataExporterService
         }
 
         throw new InvalidArgumentException('User must be an instance of Illuminate\Database\Eloquent\Model or a resolvable Authenticatable instance.');
+    }
+
+    /**
+     * Safely load relations, skipping any that cause database errors
+     */
+    private function safeLoadRelations(Model $user, array $relations): void
+    {
+        foreach ($relations as $relation) {
+            try {
+                $user->load($relation);
+            } catch (Throwable $e) {
+                // Skip relations that cause database errors (e.g., missing tables)
+                // This commonly happens with the 'notifications' relation when the table doesn't exist
+                continue;
+            }
+        }
     }
 
     /**

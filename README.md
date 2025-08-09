@@ -120,6 +120,49 @@ Configure how data is processed during export:
 - Removes internal ID fields and flattens pivot data.
 - Outputs the cleaned data in the selected format.
 
+## 🔧 Troubleshooting
+
+### "Table 'notifications' doesn't exist" Error
+
+If you encounter an error like `SQLSTATE[42S02]: Base table or view not found: 1146 Table 'notifications' doesn't exist`, this happens when your User model uses the `Notifiable` trait but you don't have the notifications database table (common when using only email notifications).
+
+**Solutions:**
+
+1. **Use Whitelist Method (Recommended)**: Configure the package to use the whitelist method and only include the relations you want to export:
+
+   ```php
+   // config/gdpr-exporter.php
+   'relations_detection' => [
+       'method' => 'whitelist',
+       'whitelist' => [
+           'posts', 'profile', 'roles', // Add your actual relations here
+           // Don't include 'notifications' if you don't have the table
+       ],
+   ],
+   ```
+
+2. **Exclude Notifications from Reflection**: If you prefer using reflection, add 'notifications' to the excluded methods:
+
+   ```php
+   // config/gdpr-exporter.php
+   'relations_detection' => [
+       'method' => 'reflection',
+       'excluded_methods' => [
+           // ... other excluded methods
+           'notifications', // Add this line
+       ],
+   ],
+   ```
+
+3. **Create the Notifications Table**: If you want to support database notifications in the future:
+
+   ```bash
+   php artisan notifications:table
+   php artisan migrate
+   ```
+
+The package now includes built-in error handling that will gracefully skip relations that cause database errors, but using the whitelist method is still the safest approach.
+
 ## DISCLAIMER
 
 This package is provided "as is" without warranty of any kind, either express or implied, including but not limited to the warranties of merchantability, fitness for a particular

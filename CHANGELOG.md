@@ -1,3 +1,13 @@
+## v1.3.1
+
+#### Published at: 2025-08-09
+
+- **[FIX]** Fixed "Table 'notifications' doesn't exist" error when using Notifiable trait without notifications table
+- Added `notifications` to default excluded methods list to prevent database errors
+- Implemented safe relation loading with graceful error handling for missing tables
+- Enhanced documentation with troubleshooting section for common notification table issues
+- Improved robustness when loading relations that may not have corresponding database tables
+
 ## v1.3.0
 
 #### Published at: 2025-08-09

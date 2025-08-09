@@ -39,6 +39,8 @@ return [
         'whitelist' => [
             // Add your safe relation method names here
             // Example: 'posts', 'profile', 'roles', 'permissions'
+            // Note: 'notifications' is excluded because it requires a database table
+            // that may not exist when using only email notifications
         ],
 
         /*
@@ -69,6 +71,7 @@ return [
             'login',
             'authenticate',
             'authorize',
+            'notifications', // Exclude notifications to prevent issues when table doesn't exist
         ],
     ],
 
